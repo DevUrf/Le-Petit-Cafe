@@ -3,10 +3,10 @@
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen) <!-- Replace with actual badge link -->
 ![License](https://img.shields.io/badge/license-MIT-blue) <!-- Replace with actual badge link -->
 ![Version](https://img.shields.io/badge/version-1.0.0-orange) <!-- Replace with actual badge link -->
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 
 Welcome to **Le Petit Café**! Your serene escape into the world of coffee making awaits. ☕ Immerse yourself in a beautifully crafted environment where you can brew, serve, and enjoy the art of coffee. This game is designed to provide a relaxing experience, allowing you to unwind while you create the perfect cup of coffee. 🌼
-
-![Le Petit Café](https://example.com/path-to-your-image.jpg) <!-- Replace with an actual image link -->
+ <!-- Replace with an actual image link -->
 
 ## 🌟 Features
 
