@@ -4,7 +4,11 @@
 ![License](https://img.shields.io/badge/license-MIT-blue) <!-- Replace with actual badge link -->
 ![Version](https://img.shields.io/badge/version-1.0.0-orange) <!-- Replace with actual badge link -->
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
+![Forks](https://img.shields.io/github/forks/DevUrf/Le-Petit-Cafe)
+![Views](https://img.shields.io/badge/views-42-brightgreen) <!-- Replace '42' with your actual view count -->
+![Funny Badge](https://img.shields.io/badge/this%20is%20not%20a%20bug-it's%20a%20feature-orange)
+![YouTube Channel](https://img.shields.io/badge/YouTube-@urfdalurf-red?logo=youtube)
 Welcome to **Le Petit Café**! Your serene escape into the world of coffee making awaits. ☕ Immerse yourself in a beautifully crafted environment where you can brew, serve, and enjoy the art of coffee. This game is designed to provide a relaxing experience, allowing you to unwind while you create the perfect cup of coffee. 🌼
  <!-- Replace with an actual image link -->
 
