@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Petit Cafe - Upgrades</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5e6d3;
+            color: #4a3728;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff5e6;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+        h1, h2 {
+            color: #8b4513;
+            text-align: center;
+        }
+        .coffee-btn {
+            background-color: #c0a080;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+        .coffee-btn:hover {
+            background-color: #8b4513;
+        }
+        #coffee-counter, #money-counter {
+            margin: 10px 0;
+            text-align: center;
+        }
+        .upgrade-section {
+            margin: 20px 0;
+        }
+        .upgrade-item {
+            background-color: #e6ccb3;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+        }
+        .upgrade-item:hover {
+            background-color: #d1b59e;
+        }
+        .tooltip {
+            visibility: hidden;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the item */
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .upgrade-item:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        #search-input {
+            padding: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Le Petit Cafe - Upgrades</h1>
+        <div id="coffee-counter">Coffees: 0</div>
+        <div id="money-counter">Money: $10</div>
+        <input type="text" id="search-input" placeholder="Search for upgrades..." onkeyup="filterUpgrades()">
+        
+        <div class="upgrade-section">
+            <h2>Basic Upgrades</h2>
+            <div id="basic-upgrades"></div>
+        </div>
+        
+        <div class="upgrade-section">
+            <h2>Advanced Upgrades</h2>
+            <div id="advanced-upgrades"></div>
+        </div>
+
+        <div class="upgrade-section">
+            <h2>Premium Upgrades</h2>
+            <div id="premium-upgrades"></div>
+        </div>
+        
+        <a href="index.html">
+            <button class="coffee-btn">Back to Cafe</button>
+        </a>
+    </div>
+
+    <script>
+        let money = 0;
+
+        const upgrades = [
+            { name: "Better Beans", cost: 10, coffeeMult: 2, purchased: false, type: "basic", tooltip: "Increases coffee production by 2x." },
+            { name: "Espresso Machine", cost: 50, coffeeMult: 5, purchased: false, type: "basic", tooltip: "Increases coffee production by 5x." },
+            { name: "Barista Training", cost: 100, coffeeMult: 10, purchased: false, type: "basic", tooltip: "Increases coffee production by 10x." },
+                        { name: "Coffee Art", cost: 200, coffeeMult: 20, purchased: false, type: "basic", tooltip: "Increases coffee production by 20x." },
+            { name: "Premium Coffee Blend", cost: 150, coffeeMult: 15, purchased: false, type: "advanced", tooltip: "A special blend that increases production by 15x." },
+            { name: "Coffee Shop Expansion", cost: 300, coffeeMult: 30, purchased: false, type: "advanced", tooltip: "Expand your shop to increase production by 30x." },
+            { name: "Loyalty Program", cost: 250, coffeeMult: 25, purchased: false, type: "advanced", tooltip: "Increases customer retention, boosting production by 25x." },
+            { name: "Coffee Subscription Service", cost: 500, coffeeMult: 50, purchased: false, type: "premium", tooltip: "A subscription service that increases production by 50x." },
+            { name: "Limited Edition Merchandise", cost: 400, coffeeMult: 40, purchased: false, type: "premium", tooltip: "Sell limited edition items to boost production by 40x." },
+            { name: "Celebrity Barista", cost: 800, coffeeMult: 80, purchased: false, type: "premium", tooltip: "Hire a celebrity barista to attract more customers and increase production by 80x." }
+        ];
+
+        function updateUpgrades() {
+            const basicUpgradesDiv = document.getElementById('basic-upgrades');
+            const advancedUpgradesDiv = document.getElementById('advanced-upgrades');
+            const premiumUpgradesDiv = document.getElementById('premium-upgrades');
+
+            basicUpgradesDiv.innerHTML = '';
+            advancedUpgradesDiv.innerHTML = '';
+            premiumUpgradesDiv.innerHTML = '';
+
+            upgrades.forEach((upgrade) => {
+                const upgradeElem = document.createElement('div');
+                upgradeElem.className = 'upgrade-item';
+                upgradeElem.textContent = `${upgrade.name} - Cost: $${upgrade.cost}`;
+                if (upgrade.purchased) {
+                    upgradeElem.textContent += ' (Purchased)';
+                    upgradeElem.style.backgroundColor = '#90EE90';
+                } else if (money >= upgrade.cost) {
+                    upgradeElem.onclick = () => buyUpgrade(upgrade);
+                }
+
+                // Tooltip
+                const tooltipElem = document.createElement('span');
+                tooltipElem.className = 'tooltip';
+                tooltipElem.textContent = upgrade.tooltip;
+                upgradeElem.appendChild(tooltipElem);
+
+                // Append to the appropriate section
+                switch (upgrade.type) {
+                    case "basic":
+                        basicUpgradesDiv.appendChild(upgradeElem);
+                        break;
+                    case "advanced":
+                        advancedUpgradesDiv.appendChild(upgradeElem);
+                        break;
+                    case "premium":
+                        premiumUpgradesDiv.appendChild(upgradeElem);
+                        break;
+                }
+            });
+        }
+
+        function buyUpgrade(upgrade) {
+            if (money >= upgrade.cost && !upgrade.purchased) {
+                money -= upgrade.cost;
+                upgrade.purchased = true;
+                updateUpgrades();
+                alert(`Bought ${upgrade.name}!`);
+            }
+        }
+
+        function filterUpgrades() {
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+            const sections = ['basic-upgrades', 'advanced-upgrades', 'premium-upgrades'];
+
+            sections.forEach(section => {
+                const upgradesDiv = document.getElementById(section);
+                const upgradeItems = upgradesDiv.children;
+
+                for (let i = 0; i < upgradeItems.length; i++) {
+                    const upgradeText = upgradeItems[i].textContent.toLowerCase();
+                    if (upgradeText.includes(searchInput)) {
+                        upgradeItems[i].style.display = 'block';
+                    } else {
+                        upgradeItems[i].style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Initial display update
+        updateUpgrades();
+    </script>
+</body>
+</html>
