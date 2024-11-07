@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Petit Cafe</title>
+    <style>
+        body {
+            font-family: 'Itim', Cursive;
+            background-color: #f5e6d3;
+            color: #4a3728;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff5e6;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+        h1, h2 {
+            color: #8b4513;
+            text-align: center;
+        }
+        .coffee-btn {
+            background-color: #c0a080;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+        .coffee-btn:hover {
+            background-color: #8b4513;
+        }
+        #coffee-counter, #money-counter, #upgrades, #achievements {
+            margin: 10px 0;
+            text-align: center;
+        }
+        .upgrade-item, .achievement-item {
+            background-color: #e6ccb3;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #garden-plot {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .plant-spot {
+            width: 60px;
+            height: 60px;
+            border: 1px solid #8B4513;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #DEB887;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .plant-spot:hover {
+            transform: scale(1.1);
+        }
+        .plant-symbol {
+            font-size: 1.5em;
+        }
+        .water-indicator {
+            font-size: 0.7em;
+            margin-top: 2px;
+        }
+        .garden-container {
+            background-color: #f5e6d3;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .garden-controls {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .achievement-popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .plant-tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+        }
+        #weather-display {
+            text-align: center;
+            margin: 10px 0;
+            font-style: italic;
+        }
+        #customer-area {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .customer {
+            display: inline-block;
+            margin: 0 10px;
+            text-align: center;
+        }
+        .customer-emoji {
+            font-size: 2em;
+        }
+        .customer-order {
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+        #barista-level {
+            text-align: center;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        #special-events {
+            text-align: center;
+            margin: 10px 0;
+            font-style: italic;
+            color: #8b4513;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            transition: opacity 0.5s;
+            animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
+        }
+        .notification.fade-out {
+            opacity: 0;
+        }
+        .notification {
+            background-color: #6b4423;
+            color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .notification-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .notification-text {
+            flex-grow: 1;
+        }
+
+        @keyframes slideIn {
+            from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+        .volume-control {
+        text-align: center;
+        margin: 10px 0;
+        padding: 10px;
+        background-color: #fff5e6;
+        border-radius: 5px;
+    }
+    
+        .volume-control input[type="range"] {
+        width: 200px;
+        margin: 0 10px;
+    }
+    
+        .bakery-button {
+        display: inline-block;
+        width: 50px; /* Adjust size as needed */
+        height: 50px; /* Adjust size as needed */
+        border-radius: 50%; /* Makes the button circular */
+        background-color: #6f4c3e; /* Button color */
+        color: white; /* Icon color */
+        text-align: center;
+        line-height: 50px; /* Center the icon vertically */
+        text-decoration: none; /* Remove underline */
+        font-size: 24px; /* Adjust icon size */
+        transition: background-color 0.3s;
+        position: fixed; /* Fixed position */
+        bottom: 20px; /* Distance from the bottom */
+        right: 20px; /* Distance from the right */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow effect */
+    }
+
+    .bakery-button:hover {
+        background-color: #8c6a5b; /* Darker shade on hover */
+    }
+    
+            .credits-button {
+        display: inline-block;
+        width: 50px; /* Adjust size as needed */
+        height: 50px; /* Adjust size as needed */
+        border-radius: 50%; /* Makes the button circular */
+        background-color: #6f4c3e; /* Button color */
+        color: white; /* Icon color */
+        text-align: center;
+        line-height: 50px; /* Center the icon vertically */
+        text-decoration: none; /* Remove underline */
+        font-size: 24px; /* Adjust icon size */
+        transition: background-color 0.3s;
+        position: fixed; /* Fixed position */
+        bottom: 20px; /* Distance from the bottom */
+        left: 20px; /* Distance from the right */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow effect */
+    }
+
+    .credits-button:hover {
+        background-color: #8c6a5b; /* Darker shade on hover */
+    }
+    
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Le Petit Cafe</h1>
+        <div id="weather-display">Current Weather: Sunny ☀️</div>
+        <div id="coffee-counter">Coffees: 0</div>
+        <div id="money-counter">Money: $0</div>
+        <div id="barista-level">Barista Level: 1</div>
+            <button class="coffee-btn" onclick="makeCoffee()">Make Coffee</button>
+            <button class="coffee-btn" onclick="serveCoffee()">Serve Coffee</button>
+        <h2>Upgrades</h2>
+        <div id="upgrades"></div>
+        <h2>Achievements</h2>
+        <div id="achievements"></div>
+<a href="achievements.html">
+    <button class="coffee-btn">All Achievements🏆</button>
+</a>
+
+
+                <button class="coffee-btn" onclick="saveGame()">Save Game</button>
+                <button class="coffee-btn" onclick="loadGame()">Load Game</button>
+
+
+        <a href="credits.html" class="credits-button">📜</a>
+        <a href="bakery.html" class="bakery-button">🏬</a>
+        <div class="garden-container">
+            <h2>Coffee Bean Garden</h2>
+            <div class="garden-controls">
+                <button class="coffee-btn" onclick="waterPlants()">Water All Plants 💧</button>
+                <button class="coffee-btn" onclick="harvestAllPlants()">Harvest All Plants 🌾</button>
+            </div>
+            <div id="garden-plot"></div>
+        </div>
+        <div id="special-events"></div>
+        <div id="customer-area">
+            <h2>Customers</h2>
+            <!-- Customers will be dynamically added here -->
+ 
+<div id="notification" style="display:none; color: red;"></div>    
+    
+    </div>
+
+    <script>
+        let coffee = 0;
+        let money = 1;
+        let coffeePerClick = 1;
+        let baristaLevel = 1;
+        let customerSatisfaction = 0;
+        let specialEventActive = false;
+        let harvestedPlants = 0;
+
+        const upgrades = [
+            { name: "Better Beans", cost: 10, coffeeMult: 2, purchased: false },
+            { name: "Espresso Machine", cost: 50, coffeeMult: 2, purchased: false },
+            { name: "Barista Training", cost: 100, coffeeMult: 3, purchased: false },
+            { name: "Coffee Art", cost: 200, coffeeMult: 3, purchased: false }
+        ];
+
+        const achievements = [
+            { name: "Coffee Novice", requirement: 10,achieved: false },
+            { name: "Coffee Enthusiast", requirement: 100, achieved: false },
+            { name: "Coffee Master", requirement: 1000, achieved: false },
+            { name: "Coffee Tycoon", requirement: 10000, achieved: false }
+        ];
+        const plants = [];
+        const weatherConditions = ['Sunny ☀️', 'Rainy 🌧️', 'Cloudy ☁️', 'Snowy ❄', 'Hailing 🧊', ];
+        let currentWeather = 'Sunny ☀️';
+        const customers = [];
+        const customerEmojis = ['👨', '👩', '👴', '👵', '🧑', ];
+        const coffeeTypes = ['Espresso', 'Latte', 'Cappuccino', 'Americano', 'Mocha', 'Aribica', 'Robusta', 'Black', 'Doppio', 'Cortado', 'Red Eye', 'Galão', 'Lungo', 'Affogato', 'Skinny Vanilla', 'Café au Lait', 'Nitro', 'Mazagran', 'Percolator', 'Turkish' ];
+
+        function updateDisplay() {
+            document.getElementById('coffee-counter').textContent = `Coffees: ${coffee}`;
+            document.getElementById('money-counter').textContent = `Money: $${money}`;
+            document.getElementById('barista-level').textContent = `Barista Level: ${baristaLevel}`;
+            updateUpgrades();
+            updateAchievements();
+            updateGarden();
+        }
+
+        function makeCoffee() {
+            if (money >= 1) { // Check if there's at least $1 to spend
+                coffee += coffeePerClick;
+                money -= 1; // Deduct $1 for making coffee
+                checkAchievements();
+                updateDisplay();
+            } else {
+                showNotification("Not enough money to make coffee!");
+            }
+        }
+
+        function serveCoffee() {
+            if (coffee > 0 && customers.length > 0) {
+                coffee--;
+                money += 2 * baristaLevel;
+                customerSatisfaction += 10;
+                removeCustomer();
+                checkBaristaLevelUp();
+                updateDisplay();
+            } else {
+                showNotification("No coffee to serve or no customers waiting!");
+            }
+        }
+
+        function buyUpgrade(index) {
+            const upgrade = upgrades[index];
+            if (money >= upgrade.cost && !upgrade.purchased) {
+                money -= upgrade.cost;
+                upgrade.purchased = true;
+                coffeePerClick *= upgrade.coffeeMult;
+                updateDisplay();
+                showNotification(`Bought ${upgrade.name}!`);
+            }
+        }
+
+        function updateUpgrades() {
+            const upgradesDiv = document.getElementById('upgrades');
+            upgradesDiv.innerHTML = '';
+            upgrades.forEach((upgrade, index) => {
+                const upgradeElem = document.createElement('div');
+                upgradeElem.className = 'upgrade-item';
+                upgradeElem.textContent = `${upgrade.name} - Cost: $${upgrade.cost}`;
+                if (upgrade.purchased) {
+                    upgradeElem.textContent += ' (Purchased)';
+                    upgradeElem.style.backgroundColor = '#90EE90';
+                } else if (money >= upgrade.cost) {
+                    upgradeElem.style.backgroundColor = '#98FB98';
+                    upgradeElem.onclick = () => buyUpgrade(index);
+                    upgradeElem.style.cursor = 'pointer';
+                }
+                upgradesDiv.appendChild(upgradeElem);
+            });
+        }
+
+        function checkAchievements() {
+            achievements.forEach(achievement => {
+                if (!achievement.achieved && coffee >= achievement.requirement) {
+                    achievement.achieved = true;
+                    showAchievementPopup(achievement.name);
+                }
+            });
+        }
+
+        function updateAchievements() {
+            const achievementsDiv = document.getElementById('achievements');
+            achievementsDiv.innerHTML = '';
+            achievements.forEach(achievement => {
+                const achievementElem = document.createElement('div');
+                achievementElem.className = 'achievement-item';
+                achievementElem.textContent = `${achievement.name} - Requires ${achievement.requirement} coffees`;
+                if (achievement.achieved) {
+                    achievementElem.style.backgroundColor = '#90EE90';
+                    achievementElem.textContent += ' (Achieved!)';
+                }
+                achievementsDiv.appendChild(achievementElem);
+            });
+        }
+
+        function showAchievementPopup(achievementName) {
+            const popup = document.createElement('div');
+            popup.className = 'achievement-popup';
+            popup.textContent = `Achievement Unlocked: ${achievementName}!`;
+            document.body.appendChild(popup);
+            setTimeout(() => {
+                popup.remove();
+            }, 3000);
+        }
+
+        function initializeGarden() {
+            const gardenPlot = document.getElementById('garden-plot');
+            for (let i = 0; i < 12; i++) {
+                const plantSpot = document.createElement('div');
+                plantSpot.className = 'plant-spot';
+                plantSpot.onclick = () => plantCoffee(i);
+                gardenPlot.appendChild(plantSpot);
+                plants.push({ stage: 0, water: 0 });
+            }
+        }
+
+        function plantCoffee(index) {
+            if (plants[index].stage === 0) {
+                plants[index].stage = 1;
+                plants[index].water = 0;
+                updateGarden();
+            }
+        }
+
+        function waterPlants() {
+            plants.forEach(plant => {
+                if (plant.stage > 0 && plant.stage < 4) {
+                    plant.water = Math.min(plant.water + 0.009, 2);
+                }
+            });
+            updateGarden();
+        }
+
+        function updateGarden() {
+            const gardenPlot = document.getElementById('garden-plot');
+            plants.forEach((plant, index) => {
+                const plantSpot = gardenPlot.children[index];
+                plantSpot.innerHTML = '';
+                if (plant.stage > 0) {
+                    const plantSymbol = document.createElement('div');
+                    plantSymbol.className = 'plant-symbol';
+                    plantSymbol.textContent = getPlantSymbol(plant.stage);
+                    plantSpot.appendChild(plantSymbol);
+
+                    const waterIndicator = document.createElement('div');
+                    waterIndicator.className = 'water-indicator';
+                    waterIndicator.textContent = '💧'.repeat(plant.water);
+                    plantSpot.appendChild(waterIndicator);
+
+                    plantSpot.title = `Growth: ${plant.stage}/400, Water: ${plant.water}/200`;
+                }
+            });
+        }
+
+        function getPlantSymbol(stage) {
+            switch (stage) {
+                case 1: return '🌱';
+                case 2: return '🌿';
+                case 3: return '☘️';
+                case 4: return '☕';
+                default: return '';
+            }
+        }
+
+        function growPlants() {
+            plants.forEach(plant => {
+                if (plant.stage > 0 && plant.stage < 4 && plant.water > 0) {
+                    plant.stage++;
+                    plant.water--;
+                }
+            });
+            updateGarden();
+        }
+
+        function harvestAllPlants() {
+            plants.forEach((plant, index) => {
+                if (plant.stage === 4) {
+                    harvestPlant(index);
+                }
+            });
+        }
+
+        function harvestPlant(index) {
+            if (plants[index].stage === 4) {
+                coffee += 1 * baristaLevel;
+                money += 2 * baristaLevel;
+                plants[index].stage = 0;
+                plants[index].water = 0;
+                harvestedPlants++;
+                updateDisplay();
+                showNotification("Harvested coffee beans!");
+            }
+        }
+
+        function updateWeather() {
+            const newWeather = weatherConditions[Math.floor(Math.random() * weatherConditions.length)];
+            currentWeather = newWeather;
+            document.getElementById('weather-display').textContent = `Current Weather: ${currentWeather}`;
+            applyWeatherEffects();
+        }
+
+        function applyWeatherEffects() {
+            switch (currentWeather) {
+                case 'Sunny ☀️':
+                    plants.forEach(plant => {
+                        if (plant.stage > 0 && plant.stage < 4) {
+                            plant.stage = Math.min(plant.stage + 1, 4);
+                        }
+                    });
+                    break;
+                case 'Rainy 🌧️':
+                    waterPlants();
+                    break;
+                case 'Cloudy ☁️':
+                    // No special effect for cloudy weather
+                    break;
+            }
+            updateGarden();
+        }
+
+        function addCustomer() {
+            if (customers.length < 5) {
+                const customerEmoji = customerEmojis[Math.floor(Math.random() * customerEmojis.length)];
+                const coffeeOrder = coffeeTypes[Math.floor(Math.random() * coffeeTypes.length)];
+                customers.push({ emoji: customerEmoji, order: coffeeOrder });
+                updateCustomers();
+            }
+        }
+
+        function removeCustomer() {
+            if (customers.length > 0) {
+                customers.shift();
+                updateCustomers();
+            }
+        }
+
+        function updateCustomers() {
+            const customerArea = document.getElementById('customer-area');
+            customerArea.innerHTML = '<h2>Customers</h2>';
+            customers.forEach(customer => {
+                const customerElement = document.createElement('div');
+                customerElement.className = 'customer';
+                customerElement.innerHTML = `
+                    <div class="customer-emoji">${customer.emoji}</div>
+                    <div class="customer-order">${customer.order}</div>
+                `;
+                customerArea.appendChild(customerElement);
+            });
+        }
+
+        function checkBaristaLevelUp() {
+            if (customerSatisfaction >= 100 * baristaLevel) {
+                baristaLevel++;
+                customerSatisfaction = 0;
+                showNotification(`Barista Level Up! You are now level ${baristaLevel}`);
+            }
+        }
+
+        function triggerSpecialEvent() {
+            if (!specialEventActive && Math.random() < 0.1) {
+                specialEventActive = true;
+                const events = [
+                    "Coffee Festival! Double profits for the next minute!",
+                    "Coffee Shortage! Prices are tripled for the next minute!",
+                    "Celebrity Visit! Quadruple customers for the next minute!"
+                ];
+                const event = events[Math.floor(Math.random() * events.length)];
+                document.getElementById('special-events').textContent = event;
+                applySpecialEvent(event);
+                setTimeout(() => {
+                    specialEventActive = false;
+                    document.getElementById('special-events').textContent = '';
+                    showNotification("Special event ended!");
+                }, 60000);
+            }
+        }
+
+        function applySpecialEvent(event) {
+            if (event.includes("Double profits")) {
+                // Implement double profits logic
+            } else if (event.includes("Prices are tripled")) {
+                // Implement tripled prices logic
+            } else if (event.includes("Quadruple customers")) {
+                // Implement quadruple customers logic
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.classList.add('fade-out');
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            }, 2500);
+        }
+        
+        function showCustomerNotification(message, icon = '👤') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <span class="notification-icon">${icon}</span>
+                <span class="notification-text">${message}</span>
+            `;
+            container.appendChild(notification);
+
+    // Remove the notification after 3 seconds
+        setTimeout(() => {
+            notification.style.animation = 'slideIn 0.5s ease-out reverse';
+            setTimeout(() => {
+                container.removeChild(notification);
+                }, 500);
+            }, 3000);
+        }
+
+// Modify your existing addCustomer function to include the notification:
+function addCustomer() {
+    if (customers.length < 5) {
+        const customerEmoji = customerEmojis[Math.floor(Math.random() * customerEmojis.length)];
+        const coffeeOrder = coffeeTypes[Math.floor(Math.random() * coffeeTypes.length)];
+        customers.push({ emoji: customerEmoji, order: coffeeOrder });
+        updateCustomers();
+        
+        // Add this line to show the notification
+        showCustomerNotification(`A new customer wants a ${coffeeOrder}!`, customerEmoji);
+    }
+}
+        // Game loop
+        function gameLoop() {
+            growPlants();
+            if (Math.random() < 0.12) addCustomer();
+            if (Math.random() < 0.1) updateWeather();
+            triggerSpecialEvent();
+            updateDisplay();
+        }
+// Sound functions
+function playSound(soundId) {
+    const sound = document.getElementById(soundId);
+    if (sound) {
+        sound.currentTime = 0; // Reset the sound to start
+        sound.play().catch(error => console.log("Sound play failed:", error));
+    }
+}
+
+// Modify your existing buyUpgrade function:
+function buyUpgrade(index) {
+    const upgrade = upgrades[index];
+    if (money >= upgrade.cost && !upgrade.purchased) {
+        money -= upgrade.cost;
+        upgrade.purchased = true;
+        coffeePerClick *= upgrade.coffeeMult;
+        updateDisplay();
+        showNotification(`Bought ${upgrade.name}!`);
+        playSound('upgradeSound'); // Add this line
+    }
+}
+
+// Modify your existing addCustomer function:
+function addCustomer() {
+    if (customers.length < 5) {
+        const customerEmoji = customerEmojis[Math.floor(Math.random() * customerEmojis.length)];
+        const coffeeOrder = coffeeTypes[Math.floor(Math.random() * coffeeTypes.length)];
+        customers.push({ emoji: customerEmoji, order: coffeeOrder });
+        updateCustomers();
+        showCustomerNotification(`A new customer wants a ${coffeeOrder}!`, customerEmoji);
+        playSound('customerSound'); // Add this line
+    }
+}
+
+// Modify your existing showAchievementPopup function:
+function showAchievementPopup(achievementName) {
+    const popup = document.createElement('div');
+    popup.className = 'achievement-popup';
+    popup.textContent = `Achievement Unlocked: ${achievementName}!`;
+    document.body.appendChild(popup);
+    playSound('achievementSound'); // Add this line
+    setTimeout(() => {
+        popup.remove();
+    }, 3000);
+}
+
+// Add a volume control function (optional)
+function setVolume(volume) {
+    const sounds = ['upgradeSound', 'customerSound', 'achievementSound'];
+    sounds.forEach(soundId => {
+        const sound = document.getElementById(soundId);
+        if (sound) {
+            sound.volume = volume; // 0.0 to 1.0
+        }
+    });
+}
+
+function saveGame() {
+    const gameState = {
+        coffee,
+        money,
+        coffeePerClick,
+        baristaLevel,
+        customerSatisfaction,
+        harvestedPlants,
+        upgrades,
+        achievements,
+        plants,
+        customers,
+        currentWeather
+        };
+        localStorage.setItem('lePetitCafeGame', JSON.stringify(gameState));
+    }
+    
+function loadGame() {
+    const savedGame = localStorage.getItem('lePetitCafeGame');
+        if (savedGame) {
+    const gameState = JSON.parse(savedGame);
+        coffee = gameState.coffee;
+        money = gameState.money;
+        coffeePerClick = gameState.coffeePerClick;
+        baristaLevel = gameState.baristaLevel;
+        customerSatisfaction = gameState.customerSatisfaction;
+        harvestedPlants = gameState.harvestedPlants;
+        upgrades.forEach((upgrade, index) => {
+            upgrade.purchased = gameState.upgrades[index].purchased;
+        });
+        achievements.forEach((achievement, index) => {
+            achievement.achieved = gameState.achievements[index].achieved;
+        });
+        plants = gameState.plants;
+        customers = gameState.customers;
+        currentWeather = gameState.currentWeather;
+        updateDisplay();
+        updateCustomers();
+        updateGarden();
+        document.getElementById('weather-display').textContent = `Current Weather: ${currentWeather}`;
+        showNotification("Game loaded!");    
+    }
+}    
+
+    // Modify the game loop to save the game periodically
+function gameLoop() {
+    growPlants();
+    if (Math.random() < 0.12) addCustomer();
+    if (Math.random() < 0.1) updateWeather();
+    triggerSpecialEvent();
+    updateDisplay();
+    saveGame(); // Save the game state every loop
+}
+
+    
+// Set initial volume (add this to your initialization code)
+setVolume(0.5); // Set volume to 50%
+        
+        // Initialize the game
+        initializeGarden();
+        updateDisplay();
+        setInterval(gameLoop, 1000); // Run game loop every 1 seconds
+
+    </script>
+<div id="notificationContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;"></div>
+<!-- Add these audio elements -->
+<audio id="upgradeSound" preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
+</audio>
+<audio id="customerSound" preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3" type="audio/mpeg">
+</audio>
+<audio id="achievementSound" preload="auto">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3" type="audio/mpeg">
+</audio>
+<!-- Ambient Music Player -->
+<audio id="ambientMusic" loop preload="auto">
+    <source src="Colorful-Flowers(chosic.com).mp3" type="audio/mp3">
+</audio>
+
+</body>
+</html>
