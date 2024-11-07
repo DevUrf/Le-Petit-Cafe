@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Achievements</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5dc; /* Beige background */
+            color: #4b3c2b; /* Dark brown text */
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h2 {
+            color: #6f4c3e; /* Coffee brown */
+        }
+        .achievement-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #e3c9a0; /* Light beige border */
+            border-radius: 5px;
+            background-color: #fff8e1; /* Light beige background */
+        }
+        .achievement-item {
+            cursor: pointer;
+            transition: background-color 0.3s;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 3px;
+            background-color: #fdf6e3; /* Slightly darker beige */
+        }
+        .achievement-item:hover {
+            background-color: #e3c9a0; /* Highlight color */
+        }
+        #tooltip {
+            position: absolute;
+            background: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            z-index: 10;
+        }
+        #tooltip.show {
+            display: block;
+        }
+        #search {
+            margin-bottom: 20px;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #theme-toggle {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #6f4c3e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+        .dark-mode .achievement-section {
+            background-color: #444;
+            border-color: #555;
+        }
+        .dark-mode .achievement-item {
+            background-color: #555;
+        }
+        .dark-mode .achievement-item:hover {
+            background-color: #666;
+        }
+    
+        .home-button {
+            display: inline-block;
+            width: 50px; /* Adjust size as needed */
+            height: 50px; /* Adjust size as needed */
+            border-radius: 50%; /* Makes the button circular */
+            background-color: #6f4c3e; /* Button color */
+            color: white; /* Icon color */
+            text-align: center;
+            line-height: 50px; /* Center the icon vertically */
+            text-decoration: none; /* Remove underline */
+            font-size: 24px; /* Adjust icon size */
+            transition: background-color 0.3s;
+            position: fixed; /* Fixed position */
+            bottom: 20px; /* Distance from the bottom */
+            right: 20px; /* Distance from the right */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow effect */
+        }
+
+        .home-button:hover {
+            background-color: #8c6a5b; /* Darker shade on hover */
+        }
+    
+    </style>
+</head>
+<body>
+
+<h1>Coffee Achievements</h1>
+<input type="text" id="search" placeholder="Search achievements..." onkeyup="searchAchievements()">
+<button id="theme-toggle">Toggle Dark Mode</button>
+
+<div id="achievements-container"></div>
+<div id="tooltip"></div>
+
+<a href="index.html" class="home-button">🏠</a>
+
+<audio id="click-sound" src="click-sound.mp3"></audio>
+<audio id="achievement-sound" src="achievement-sound.mp3"></audio>
+
+<script>
+    const achievementsData = {
+        "Brewing Basics": [
+            "Learned the basics of brewing coffee ☕️",
+            "Mastered the pour-over technique ☕️💧",
+            "Experimented with different brewing methods 🔄",
+            "Brewed your first cup of coffee without burning it 🔥",
+            "Created a perfect cup of coffee using a French press 🇫🇷",
+            "Discovered the joys of cold brew ☕️❄️",
+            "Perfected the art of the espresso shot ☕️💥",
+            "Tried brewing coffee with a siphon 🔬",
+            "Brewed coffee using a Moka pot for the first time ☕️🇮🇹",
+            "Learned about coffee water ratios 💧⚖️"
+        ],
+        "Grinding Techniques": [
+            "Learned about different grind sizes ⚙️",
+            "Experimented with hand grinding coffee beans 🖐️",
+            "Mastered the burr grinder for consistent grind ☕️",
+            "Tried a blade grinder and compared the results 🔪",
+            "Explored the effects of grind size on flavor 🌈",
+            "Developed a perfect grind for espresso ☕️💎",
+            "Created a coffee blend using different grind sizes 🔄",
+            "Tried grinding coffee beans right before brewing ⏳",
+            "Learned about the importance of grind uniformity ⚖️",
+            "Experimented with different grinding methods for cold brew ❄️"
+        ],
+        "Coffee Exploration": [
+            "Tasted coffee from five different countries 🌍",
+            "Learned about coffee origins and their flavors 📚",
+            "Visited a local coffee farm 🏞️",
+            "Attended a coffee tasting event ☕️🎉",
+            "Explored different coffee processing methods 🏭",
+            "Created a coffee flavor wheel for personal use 🎡",
+            "Tried a coffee from a rare coffee-producing region 🌄",
+            "Participated in a coffee cupping session ☕️🔍",
+            "Wrote a blog post about your coffee journey ✍️",
+            "Created a coffee passport to track your tastings 📖"
+        ],
+        "Latte Art": [
+            "Learned the basics of latte art ☕️🎨",
+            "Mastered the heart design ❤️",
+            "Created a rosette latte art design 🌹",
+            "Tried free pouring for the first time 🎉",
+            "Experimented with different milk frothing techniques 🥛",
+            "Created a tulip design in your latte art 🌷",
+            "Tried etching designs in your latte using cocoa powder or cinnamon 🍫",
+            "Hosted a latte art competition with friends 🏆",
+            "Created a seasonal latte art design (pumpkin, snowflake, etc.) 🎃❄️",
+            "Learned about the science of milk frothing 🥛🔬"
+        ],
+        "Coffee and Food Pairing": [
+            "Discovered the best food pairings for coffee 🍰",
+            "Tried coffee and chocolate pairings for the first time 🍫☕️",
+            "Created a coffee-infused dessert recipe 🍨",
+            "Learned about coffee tasting notes and food pairings 📚",
+            "Hosted a coffee and food pairing dinner 🍽️☕️",
+            "Explored the world of coffee cocktails 🍹",
+            "Tried pairing coffee with breakfast items 🥐☕️",
+            "Experimented with savory dishes that include coffee 🌶️",
+            "Created a coffee and cheese tasting board 🧀☕️",
+            "Learned about regional food pairings with coffee 🌍"
+        ],
+        "Coffee and Wellness": [
+            "Explored the health benefits of coffee 🌱",
+            "Tried a coffee scrub for skincare 🧖‍♀️",
+            "Learned about coffee's role in exercise performance 🏋️‍♂️",
+            "Created a coffee-infused smoothie recipe 🍹",
+            "Explored the effects of decaf coffee on health ☕️🚫",
+            "Tried a coffee and adaptogen blend for stress relief 🌿",
+            "Learned about the antioxidants in coffee 🍵",
+            "Created a coffee ritual for mindfulness 🧘‍♂️",
+            "Explored the connection between coffee and longevity 🌱",
+            "Tried a coffee-based herbal tea blend 🌿☕️"
+        ],
+        "Coffee Beans": [
+            "Learned about different coffee bean varieties 🌱",
+            "Tried single-origin coffee beans for the first time ☕️🌍",
+            "Explored the differences between Arabica and Robusta beans 🌱",
+            "Created a coffee bean tasting flight for friends ✈️☕️",
+            "Experimented with roasting your own coffee beans 🔥",
+            "Learned how to properly store coffee beans 🏠",
+            "Discovered the impact of bean freshness on flavor 🌱",
+            "Tried coffee beans from a local roaster for the first time ☕️🏪",
+            "Created a chart comparing various coffee beans 📊",
+            "Joined a coffee bean subscription service 📦"
+        ],
+        "Coffee Roasting": [
+            "Learned about the coffee roasting process 🔥",
+            "Tried home roasting coffee beans for the first time 🏠",
+            "Experimented with different roast levels (light, medium, dark) ☕️",
+            "Created a roasting profile for your favorite beans 📈",
+            "Joined a local coffee roasting workshop 🔥👩‍🏫",
+            "Tried blending different roasts for unique flavors 🌈",
+            "Learned about the Maillard reaction in coffee roasting 🔬",
+            "Explored the effects of altitude on coffee roasting 🌄",
+            "Created a roasting log to track your experiments 📖",
+            "Tried roasting coffee using a popcorn maker 🍿"
+        ],
+        "Coffee Equipment": [
+            "Learned about different coffee brewing equipment 🔧",
+            "Tried using a Chemex for the first time ☕️",
+            "Experimented with a French press for rich flavor 🇫🇷",
+            "Learned how to clean your coffee equipment 🧼",
+            "Tried a pour-over setup for precision brewing ☕️🎯",
+            "Explored the benefits of using a scale for brewing ⚖️",
+            "Discovered the importance of water temperature in brewing 🌡️",
+            "Created a coffee brewing station at home 🏠☕️",
+            "Tried a siphon coffee maker for theatrical brewing 🔬",
+            "Upgraded your coffee grinder for better consistency ⚙️"
+        ],
+        "Sustainable Coffee Practices": [
+            "Learned about sustainable coffee sourcing 🌱",
+            "Tried fair trade coffee for ethical consumption ☕️🤝",
+            "Explored the impact of coffee farming on the environment 🌍",
+            "Created a compost bin for coffee grounds ♻️",
+            "Participated in a local coffee sustainability event 🌱🎉",
+            "Discovered the benefits of shade-grown coffee 🌳",
+            "Learned about direct trade coffee relationships 🤝",
+            "Explored ways to reduce waste in coffee consumption 🚯",
+            "Tried a zero-waste coffee brewing method (e.g., using reusable filters) ♻️☕️",
+            "Created a guide for sustainable coffee practices for your community 📚🌍"
+        ],
+        "Hidden Achievements": [
+            "The Caffeinated Cursing Connoisseur ☕️💩",
+            "The Beans of the Dead ☕️💀",
+            "The Unholy Combo ☕️😈",
+            "The Espresso Expletive Expert ☕️🤬",
+            "The Mocha Misfit of Mayhem ☕️😜",
+            "The Dark Roast Ruckus Ranter ☕️🤯",
+            "The Siphon Sinner of Snark ☕️😏",
+            "The Latte Lamentation Legend ☕️😱",
+            "The Brewed Banshee of Bedlam ☕️👻",
+            "The Percolated Profanity Professor ☕️📚",
+            "The Caffeine Chaos Creator ☕️💥",
+            "The Bitter Bean Blasphemer ☕️💢",
+            "The Roast Ruckus Rogue ☕️💣",
+            "The Coffee Cursing Crusader ☕️⚔️",
+            "The Wicked Whip of Woe ☕️😩",
+            "The Frappuccino Foulness Fanatic ☕️🤪",
+            "The Coffee Cauldron of Curses ☕️🔮",
+            "The Bizarre Brew of Blunders ☕️😵",
+            "The Caffeine Catastrophe Conductor ☕️🎻",
+            "The Haphazard Hot Brew Hellion ☕️🔥",
+            "The Cursed Cup of Chaos ☕️💀",
+            "The Mocha Mischief Maker ☕️🃏",
+            "The Java Jinx of Jargon ☕️🗣️",
+            "The Sinful Sips of Sarcasm ☕️😈",
+            "The Coffee Catastrophe of Chaos ☕️💥"
+        ]
+    };
+
+    const achievementsContainer = document.getElementById('achievements-container');
+    const tooltip = document.getElementById('tooltip');
+    const clickSound = document.getElementById('click-sound');
+    const achievementSound = document.getElementById('achievement-sound');
+
+    for (const [category, achievements] of Object.entries(achievementsData)) {
+        const section = document.createElement('div');
+        section.classList.add('achievement-section');
+        const title = document.createElement('h2');
+        title.textContent = category;
+        section.appendChild(title);
+
+        achievements.forEach(achievement => {
+            const item = document.createElement('div');
+            item.classList.add('achievement-item');
+            item.textContent = achievement;
+            item.addEventListener('mouseenter', () => {
+                tooltip.textContent = achievement;
+                tooltip.classList.add('show');
+            });
+            item.addEventListener('mouseleave', () => {
+                tooltip.classList.remove('show');
+            });
+            item.addEventListener('click', () => {
+                clickSound.play();
+                item.classList.toggle('show');
+                achievementSound.play();
+            });
+            section.appendChild(item);
+        });
+
+        achievementsContainer.appendChild(section);
+    }
+
+    document.addEventListener('mousemove', (e) => {
+        tooltip.style.top = `${e.pageY + 10}px`;
+        tooltip.style.left = `${e.pageX + 10}px`;
+    });
+
+    function searchAchievements() {
+        const input = document.getElementById('search').value.toLowerCase();
+        const sections = achievementsContainer.getElementsByClassName('achievement-section');
+
+        for (let i = 0; i < sections.length; i++) {
+            const achievements =            sections[i].getElementsByClassName('achievement-item');
+            let sectionVisible = false;
+
+            for (let j = 0; j < achievements.length; j++) {
+                const achievementText = achievements[j].textContent.toLowerCase();
+                if (achievementText.includes(input)) {
+                    achievements[j].style.display = 'block';
+                    sectionVisible = true;
+                } else {
+                    achievements[j].style.display = 'none';
+                }
+            }
+
+            sections[i].style.display = sectionVisible ? 'block' : 'none';
+        }
+    }
+
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        document.getElementById('theme-toggle').textContent = isDarkMode ? 'Switch to Light Mode' : 'Toggle Dark Mode';
+    });
+</script>
+
+</body>
+</html>
