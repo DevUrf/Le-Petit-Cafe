@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakery Achievements</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5dc; /* Beige background */
+            color: #4b3c2b; /* Dark brown text */
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h2 {
+            color: #6f4c3e; /* Coffee brown */
+        }
+        .achievement-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #e3c9a0; /* Light beige border */
+            border-radius: 5px;
+            background-color: #fff8e1; /* Light beige background */
+        }
+        .achievement-item {
+            cursor: pointer;
+            transition: background-color 0.3s;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 3px;
+            background-color: #fdf6e3; /* Slightly darker beige */
+        }
+        .achievement-item:hover {
+            background-color: #e3c9a0; /* Highlight color */
+        }
+        #tooltip {
+            position: absolute;
+            background: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            z-index: 10;
+        }
+        #tooltip.show {
+            display: block;
+        }
+        #search {
+            margin-bottom: 20px;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #theme-toggle {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #6f4c3e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+        .dark-mode .achievement-section {
+            background-color: #444;
+            border-color: #555;
+        }
+        .dark-mode .achievement-item {
+            background-color: #555;
+        }
+        .dark-mode .achievement-item:hover {
+            background-color: #666;
+        }
+    
+        .bakery-button {
+            display: inline-block;
+            width: 50px; /* Adjust size as needed */
+            height: 50px; /* Adjust size as needed */
+            border-radius: 50%; /* Makes the button circular */
+            background-color: #6f4c3e; /* Button color */
+            color: white; /* Icon color */
+            text-align: center;
+            line-height: 50px; /* Center the icon vertically */
+            text-decoration: none; /* Remove underline */
+            font-size: 24px; /* Adjust icon size */
+            transition: background-color 0.3s;
+            position: fixed; /* Fixed position */
+            bottom: 20px; /* Distance from the bottom */
+            right: 20px; /* Distance from the right */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow effect */
+        }
+
+        .bakery-button:hover {
+            background-color: #8c6a5b; /* Darker shade on hover */
+        }
+
+        .bakery-button {
+        display: inline-block;
+        width: 50px; /* Adjust size as needed */
+        height: 50px; /* Adjust size as needed */
+        border-radius: 50%; /* Makes the button circular */
+        background-color: #6f4c3e; /* Button color */
+        color: white; /* Icon color */
+        text-align: center;
+        line-height: 50px; /* Center the icon vertically */
+        text-decoration: none; /* Remove underline */
+        font-size: 24px; /* Adjust icon size */
+        transition: background-color 0.3s;
+        position: fixed; /* Fixed position */
+        bottom: 20px; /* Distance from the bottom */
+        right: 20px; /* Distance from the right */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow effect */
+    }
+
+        .bakery-button:hover {
+        background-color: #8c6a5b; /* Darker shade on hover */
+    }
+    
+        .credits-button {
+        display: inline-block;
+        width: 50px; /* Adjust size as needed */
+        height: 50px; /* Adjust size as needed */
+        border-radius: 50%; /* Makes the button circular */
+        background-color: #6f4c3e; /* Button color */
+        color: white; /* Icon color */
+        text-align: center;
+        line-height: 50px; /* Center the icon vertically */
+        text-decoration: none; /* Remove underline */
+        font-size: 24px; /* Adjust icon size */
+        transition: background-color 0.3s;
+        position: fixed; /* Fixed position */
+        bottom: 20px; /* Distance from the bottom */
+        left: 20px; /* Distance from the right */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow effect */
+    }
+    
+    </style>
+</head>
+<body>
+
+<h1>Bakery Achievements</h1>
+<input type="text" id="search" placeholder="Search achievements..." onkeyup="searchAchievements()">
+<button id="theme-toggle">Toggle Dark Mode</button>
+
+<div id="achievements-container"></div>
+<div id="tooltip"></div>
+
+<a href="bakery.html" <button class="bakery-button">🏬</a>
+
+<audio id="click-sound" src="click-sound.mp3"></audio>
+<audio id="achievement-sound" src="achievement-sound.mp3"></audio>
+
+<script>
+    const achievementsData = {
+        "Baking Basics": [
+            "Learned the basics of baking bread 🍞",
+            "Mastered the art of sourdough starter 🥖",
+            "Experimented with different bread recipes 🔄",
+            "Baked your first loaf of bread without burning it 🔥",
+            "Created a perfect baguette 🇫🇷",
+            "Discovered the joys of baking with whole grains 🌾",
+            "Perfected the art of the perfect croissant 🥐",
+            "Tried baking with a Dutch oven for the first time 🔥",
+            "Baked cookies from scratch for the first time 🍪",
+            "Learned about flour types and their uses 💧⚖️"
+        ],
+        "Pastry Techniques": [
+            "Learned about different pastry types ⚙️",
+            "Experimented with making puff pastry 🥐",
+            "Mastered the art of choux pastry for éclairs ☁️",
+            "Tried a classic Danish pastry and compared the results 🍰",
+            "Explored the effects of butter on pastry texture 🧈",
+            "Developed a perfect pie crust recipe 🥧",
+            "Created a pastry blend using different techniques 🔄",
+            "Tried making pastries right before serving ⏳",
+            "Learned about the importance of chilling pastry dough ❄️",
+            "Experimented with different fillings for tarts 🍓"
+        ],
+        "Bakery Exploration": [
+            "Tasted pastries from five different bakeries 🌍",
+            "Learned about regional baking styles 📚",
+            "Visited a local bakery 🏞️",
+            "Attended a baking workshop ☕️🎉",
+            "Explored different bread-making techniques 🏭",
+            "Created a flavor profile for your favorite pastries 🎡",
+            "Tried a pastry from a rare baking region 🌄",
+            "Participated in a baking competition ☕️🔍",
+            "Wrote a blog post about your baking journey ✍️",
+            "Created a baking passport to track your tastings 📖"
+        ],
+        "Cake Decorating": [
+            "Learned the basics of cake decorating 🎂",
+            "Mastered the art of buttercream flowers 🌸",
+            "Created a fondant-covered cake for the first time 🎉",
+            "Tried piping techniques for the first time 🎨",
+            "Experimented with different cake flavor combinations 🍰",
+            "Created a tiered cake for a special occasion 🎂🎊",
+            "Tried airbrushing techniques for cake decorating 🎨",
+            "Hosted a cake decorating party with friends 🏆",
+            "Created a seasonal cake design (pumpkin, snowflake, etc.) 🎃❄️",
+            "Learned about the science of cake structure 🥄🔬"
+        ],
+        "Baking and Food Pairing": [
+            "Discovered the best food pairings for baked goods 🍰",
+            "Tried pairing pastries with coffee for the first time ☕️🍩",
+            "Created a dessert recipe using bread 🍨",
+            "Learned about flavor notes and food pairings 📚",
+            "Hosted a baking and food pairing dinner 🍽️🍰",
+            "Explored the world of dessert cocktails 🍹",
+            "Tried pairing pastries with breakfast items 🥐☕️",
+            "Experimented with savory pastries that include cheese 🌶️",
+            "Created a dessert tasting board 🧀🍰",
+            "Learned about regional food pairings with baked goods 🌍"
+        ],
+        "Baking and Wellness": [
+            "Explored the health benefits of whole grains 🌱",
+            "Tried a bread scrub for skincare 🧖‍♀️",
+            "Learned about baking's role in stress relief 🏋️‍♂️",
+            "Created a smoothie recipe using baked goods 🍹",
+            "Explored the effects of gluten-free baking on health 🍞🚫",
+            "Tried a baking and adaptogen blend for relaxation 🌿",
+            "Learned about the nutritional benefits of nuts in baking 🍵",
+            "Created a baking ritual for mindfulness 🧘‍♂️",
+            "Explored the connection between baking and happiness 🌱",
+            "Tried a baked herbal tea blend 🌿🍰"
+        ],
+        "Baking Ingredients": [
+            "Learned about different baking ingredient varieties 🌱",
+            "Tried using organic ingredients for the first time 🍞🌍",
+            "Explored the differences between all-purpose and cake flour 🌱",
+            "Created a baking ingredient tasting flight for friends ✈️🍰",
+            "Experimented with homemade baking mixes 🔥",
+            "Learned how to properly store baking ingredients 🏠",
+            "Discovered the impact of ingredient freshness on flavor 🌱",
+            "Tried specialty ingredients from a local store for the first time 🍰🏪",
+            "Created a chart comparing various baking ingredients 📊",
+            "Joined a baking ingredient subscription service 📦"
+        ],
+        "Baking Techniques": [
+            "Learned about different baking methods 🔧",
+            "Tried using a stand mixer for the first time 🍞",
+            "Experimented with a convection oven for even baking 🍰",
+            "Learned how to properly preheat your oven 🧼",
+            "Tried a no-bake dessert setup for simplicity 🍰🎯",
+            "Explored the benefits of using a scale for baking ⚖️",
+            "Discovered the importance of oven temperature in baking 🌡️",
+            "Created a baking station at home 🏠🍰",
+            "Tried a steam oven for unique baking results 🔬",
+            "Upgraded your baking tools for better results ⚙️"
+        ],
+        "Sustainable Baking Practices": [
+            "Learned about sustainable ingredient sourcing 🌱",
+            "Tried using local ingredients for ethical baking 🍞🤝",
+            "Explored the impact of baking on the environment 🌍",
+            "Created a compost bin for baking scraps ♻️",
+            "Participated in a local baking sustainability event 🌱🎉",
+            "Discovered the benefits of organic baking 🌳",
+            "Learned about direct trade relationships with ingredient suppliers 🤝",
+            "Explored ways to reduce waste in baking 🚯",
+            "Tried a zero-waste baking method (e.g., using all parts of ingredients) ♻️🍰",
+            "Created a guide for sustainable baking practices for your community 📚🌍"
+        ],
+        "Hidden Achievements": [
+            "The Doughnut Dilemma 🍩😅",
+            "The Croissant Conundrum 🥐🤔",
+            "The Muffin Mayhem 🧁😈",
+            "The Scone Shenanigans 🍪😜",
+            "The Biscuit Bandit 🍪💰",
+            "The Bread Basket Bandito 🍞🏴‍☠️",
+            "The Pastry Prankster 🍰😏",
+            "The Cake Catastrophe 🎂😱",
+            "The Tart Terrors 🍰👻",
+            "The Baker's Blunder 🥖🤦‍♂️",
+            "The Cookie Chaos Creator 🍪💥",
+            "The Muffin Mischief Maker 🧁🃏",
+            "The Pudding Pandemonium 🍮💢",
+            "The Fritter Fiasco 🍩💣",
+            "The Sweet Treat Tyrant 🍰⚔️",
+            "The Baked Goods Bandit 🍞🦹‍♂️",
+            "The Confectionery Catastrophe 🍬😵",
+            "The Whimsical Whisker 🎂🔮",
+            "The Flaky Follies 🥐🎭",
+            "The Doughy Disaster 🍞🔥",
+            "The Pastry Prankster 🍰😈",
+            "The Cakewalk of Chaos 🎂💥",
+            "The Baker's Dozen of Doom 🍞💀",
+            "The Sweet Tooth Trickster 🍩🗣️",
+            "The Flour Power Fiasco 🌾😈",
+            "The Baking Blunderbuss 🍰💣"
+        ]
+    };
+
+    const achievementsContainer = document.getElementById('achievements-container');
+    const tooltip = document.getElementById('tooltip');
+    const clickSound = document.getElementById('click-sound');
+    const achievementSound = document.getElementById('achievement-sound');
+
+    for (const [category, achievements] of Object.entries(achievementsData)) {
+        const section = document.createElement('div');
+        section.classList.add('achievement-section');
+        const title = document.createElement('h2');
+        title.textContent = category;
+        section.appendChild(title);
+
+        achievements.forEach(achievement => {
+            const item = document.createElement('div');
+            item.classList.add('achievement-item');
+            item.textContent = achievement;
+            item.addEventListener('mouseenter', () => {
+                tooltip.textContent = achievement;
+                tooltip.classList.add('show');
+            });
+            item.addEventListener('mouseleave', () => {
+                tooltip.classList.remove('show');
+            });
+            item.addEventListener('click', () => {
+                clickSound.play();
+                item.classList.toggle('show');
+                achievementSound.play();
+            });
+            section.appendChild(item);
+        });
+
+        achievementsContainer.appendChild(section);
+    }
+
+    document.addEventListener('mousemove', (e) => {
+        tooltip.style.top = `${e.pageY + 10}px`;
+        tooltip.style.left = `${e.pageX + 10}px`;
+    });
+
+    function searchAchievements() {
+        const input = document.getElementById('search').value.toLowerCase();
+        const sections = achievementsContainer.getElementsByClassName('achievement-section');
+
+        for (let i = 0; i < sections.length; i++) {
+            const achievements = sections[i].getElementsByClassName('achievement-item');
+            let sectionVisible = false;
+
+            for (let j = 0; j < achievements.length; j++) {
+                const achievementText = achievements[j].textContent.toLowerCase();
+                if (achievementText.includes(input)) {
+                    achievements[j].style.display = 'block';
+                    sectionVisible = true;
+                } else {
+                    achievements[j].style.display = 'none';
+                }
+            }
+
+            sections[i].style.display = sectionVisible ? 'block' : 'none';
+        }
+    }
+
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        document.getElementById('theme-toggle').textContent = isDarkMode ? 'Switch to Light Mode' : 'Toggle Dark Mode';
+    });
+</script>
+
+</body>
+</html>
