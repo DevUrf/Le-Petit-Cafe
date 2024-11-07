@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Petit Bakery</title>
+    <style>
+        body {
+            font-family: 'Itim', Cursive;
+            background-color: #f5e6d3;
+            color: #4a3728;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff5e6;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+        h1, h2 {
+            color: #8b4513;
+            text-align: center;
+        }
+        .bakery-btn {
+            background-color: #c0a080;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+        .bakery-btn:hover {
+            background-color: #8b4513;
+        }
+        #baked-goods-counter, #money-counter, #upgrades, #achievements {
+            margin: 10px 0;
+            text-align: center;
+        }
+        .upgrade-item, .achievement-item {
+            background-color: #e6ccb3;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #garden-plot {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .plant-spot {
+            width: 60px;
+            height: 60px;
+            border: 1px solid #8B4513;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #DEB887;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .plant-spot:hover {
+            transform: scale(1.1);
+        }
+        .plant-symbol {
+            font-size: 1.5em;
+        }
+        .water-indicator {
+            font-size: 0.7em;
+            margin-top: 2px;
+        }
+        .garden-container {
+            background-color: #f5e6d3;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .garden-controls {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .achievement-popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .plant-tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+        }
+        #weather-display {
+            text-align: center;
+            margin: 10px 0;
+            font-style: italic;
+        }
+        #customer-area {
+            margin-top: 20px;
+            text-align: center;        }
+        .customer {
+            display: inline-block;
+            margin: 0 10px;
+            text-align: center;
+        }
+        .customer-emoji {
+            font-size: 2em;
+        }
+        .customer-order {
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+        #baker-level {
+            text-align: center;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        #special-events {
+            text-align: center;
+            margin: 10px 0;
+            font-style: italic;
+            color: #8b4513;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            transition: opacity 0.5s;
+            animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
+        }
+        .notification.fade-out {
+            opacity: 0;
+        }
+        .notification {
+            background-color: #6b4423;
+            color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .notification-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .notification-text {
+            flex-grow: 1;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .volume-control {
+            text-align: center;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #fff5e6;
+            border-radius: 5px;
+        }
+        
+        .volume-control input[type="range"] {
+            width: 200px;
+            margin: 0 10px;
+        }
+    
+        .home-button {
+            display: inline-block;
+            width: 50px; /* Adjust size as needed */
+            height: 50px; /* Adjust size as needed */
+            border-radius: 50%; /* Makes the button circular */
+            background-color: #6f4c3e; /* Button color */
+            color: white; /* Icon color */
+            text-align: center;
+            line-height: 50px; /* Center the icon vertically */
+            text-decoration: none; /* Remove underline */
+            font-size: 24px; /* Adjust icon size */
+            transition: background-color 0.3s;
+            position: fixed; /* Fixed position */
+            bottom: 20px; /* Distance from the bottom */
+            right: 20px; /* Distance from the right */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow effect */
+        }
+
+        .home-button:hover {
+            background-color: #8c6a5b; /* Darker shade on hover */
+        }    
+    
+    
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Le Petit Bakery 🍰</h1>
+        <div id="weather-display">Current Weather: Sunny ☀️</div>
+        <div id="baked-goods-counter">Baked Goods: 0</div>
+        <div id="money-counter">Money: $0</div>
+        <div id="baker-level">Baker Level: 1</div>
+        <button class="bakery-btn" onclick="makeBakedGood()">Make Baked Good</button>
+        <a href="bakery.html" class="bakery-button"></a>
+        <button class="bakery-btn" onclick="serveBakedGood()">Serve Baked Good</button>
+        <h2>Upgrades</h2>
+        <div id="upgrades"></div>
+        <h2>Achievements</h2>
+        <div id="achievements"></div>
+        <a href="bakeryachievements.html">
+            <button class="bakery-btn">All Achievements 🏆</button>
+        </a>
+        <div class="garden-container">
+            <h2>Baking Ingredient Garden 🌱</h2>
+            <div class="garden-controls">
+                <button class="bakery-btn" onclick="waterPlants()">Water All Plants 💧</button>
+                <button class="bakery-btn" onclick="harvestAllPlants()">Harvest All Plants 🌾</button>
+            </div>
+            <div id="garden-plot"></div>
+        </div>
+        <div id="special-events"></div>
+        <div id="customer-area">
+            <h2>Customers</h2>
+            <!-- Customers will be dynamically added here -->
+        </div>
+        <a href="index.html" class="home-button">🏠</a>
+        <div id="notification" style="display:none; color: red;"></div>    
+    </div>
+
+    <script>
+        let bakedGoods = 0;
+        let money = 1;
+        let bakedGoodsPerClick = 1;
+        let bakerLevel = 1;
+        let customerSatisfaction = 0;
+        let specialEventActive = false;
+        let harvestedPlants = 0;
+
+        const upgrades = [
+            { name: "Better Ingredients", cost: 10, bakedGoodsMult: 2, purchased: false },
+            { name: "Baking Oven", cost: 50, bakedGoodsMult: 5, purchased: false },
+            { name: "Baker Training", cost: 100, bakedGoodsMult: 10, purchased: false },
+            { name: "Decorative Icing", cost: 200, bakedGoodsMult: 20, purchased: false }
+        ];
+
+        const achievements = [
+            { name: "Baking Novice", requirement: 10, achieved: false },
+            { name: "Baking Enthusiast", requirement: 100, achieved: false },
+            { name: "Baking Master", requirement: 1000, achieved: false },
+            { name: "Baking Tycoon", requirement: 10000, achieved: false }
+        ];
+
+        const plants = [];
+        const weatherConditions = ['Sunny ☀️', 'Rainy 🌧️', 'Cloudy ☁️', 'Snowy ❄', 'Hailing 🧊'];
+        let currentWeather = 'Sunny ☀️';
+        const customers = [];
+        const customerEmojis = ['👨‍🍳', '👩‍🍳', '👴', '👵', '🧑'];
+        const bakedGoodTypes = ['Croissant', 'Baguette', 'Eclair', 'Macaron', 'Cupcake', 'Brownie', 'Danish'];
+
+        function updateDisplay() {
+            document.getElementById('baked-goods-counter').textContent = `Baked Goods: ${bakedGoods}`;
+            document.getElementById('money-counter').textContent = `Money: $${money}`;
+            document.getElementById('baker-level').textContent = `Baker Level: ${bakerLevel}`;
+            updateUpgrades();
+            updateAchievements();
+            updateGarden();
+        }
+
+        function makeBakedGood() {
+            if (money >= 1) { // Check if there's at least $1 to spend
+                bakedGoods += bakedGoodsPerClick;
+                money -= 1; // Deduct $1 for making a baked good
+                checkAchievements();
+                updateDisplay();
+            } else {
+                showNotification("Not enough money to make baked goods!");
+            }
+        }
+
+        function serveBakedGood() {
+            if (bakedGoods > 0 && customers.length > 0) {
+                bakedGoods--;
+                money += 2 * bakerLevel;
+                customerSatisfaction += 10;
+                removeCustomer();
+                checkBakerLevelUp();
+                updateDisplay();
+            } else {
+                showNotification("No baked goods to serve or no customers waiting!");
+            }
+        }
+
+        function buyUpgrade(index) {
+            const upgrade = upgrades[index];
+            if (money >= upgrade.cost && !upgrade.purchased) {
+                money -= upgrade.cost;
+                upgrade.purchased = true;
+                bakedGoodsPerClick *= upgrade.bakedGoodsMult;
+                updateDisplay();
+                showNotification(`Bought ${upgrade.name}!`);
+            }
+        }
+
+        function updateUpgrades() {
+            const upgradesDiv = document.getElementById('upgrades');
+            upgradesDiv.innerHTML = '';
+            upgrades.forEach((upgrade, index) => {
+                const upgradeElem = document.createElement('div');
+                upgradeElem.className = 'upgrade-item';
+                upgradeElem.textContent = `${upgrade.name} - Cost: $${upgrade.cost}`;
+                if (upgrade.purchased) {
+                    upgradeElem.textContent += ' (Purchased)';
+                    upgradeElem.style.backgroundColor = '#90EE90';
+                } else if (money >= upgrade.cost) {
+                    upgradeElem.style.backgroundColor = '#98FB98';
+                    upgradeElem.onclick = () => buyUpgrade(index);
+                    upgradeElem.style.cursor = 'pointer';
+                }
+                upgradesDiv.appendChild(upgradeElem);
+            });
+        }
+
+        function checkAchievements() {
+            achievements.forEach(achievement => {
+                if (!achievement.achieved && bakedGoods >= achievement.requirement) {
+                    achievement.achieved = true;
+                    showAchievementPopup(achievement.name);
+                }
+            });
+        }
+
+        function updateAchievements() {
+            const achievementsDiv = document.getElementById('achievements');
+            achievementsDiv.innerHTML = '';
+            achievements.forEach(achievement => {
+                const achievementElem = document.createElement('div');
+                achievementElem.className = 'achievement-item';
+                achievementElem.textContent = `${achievement.name} - Requires ${achievement.requirement} baked goods`;
+                if (achievement.achieved) {
+                    achievementElem.style.backgroundColor = '#90EE90';
+                    achievementElem.textContent += ' (Achieved!)';
+                }
+                achievementsDiv.appendChild(achievementElem);
+            });
+        }
+
+        function showAchievementPopup(achievementName) {
+            const popup = document.createElement('div');
+            popup.className = 'achievement-popup';
+            popup.textContent = `Achievement             unlocked: ${achievementName}!`;
+            document.body.appendChild(popup);
+            setTimeout(() => {
+                popup.remove();
+            }, 3000);
+        }
+
+        function initializeGarden() {
+            const gardenPlot = document.getElementById('garden-plot');
+            for (let i = 0; i < 12; i++) {
+                const plantSpot = document.createElement('div');
+                plantSpot.className = 'plant-spot';
+                plantSpot.onclick = () => plantIngredient(i);
+                gardenPlot.appendChild(plantSpot);
+                plants.push({ stage: 0, water: 0 });
+            }
+        }
+
+        function plantIngredient(index) {
+            if (plants[index].stage === 0) {
+                plants[index].stage = 1;
+                plants[index].water = 0;
+                updateGarden();
+            }
+        }
+
+        function waterPlants() {
+            plants.forEach(plant => {
+                if (plant.stage > 0 && plant.stage < 4) {
+                    plant.water = Math.min(plant.water + 0.1, 2);
+                }
+            });
+            updateGarden();
+        }
+
+        function updateGarden() {
+            const gardenPlot = document.getElementById('garden-plot');
+            plants.forEach((plant, index) => {
+                const plantSpot = gardenPlot.children[index];
+                plantSpot.innerHTML = '';
+                if (plant.stage > 0) {
+                    const plantSymbol = document.createElement('div');
+                    plantSymbol.className = 'plant-symbol';
+                    plantSymbol.textContent = getPlantSymbol(plant.stage);
+                    plantSpot.appendChild(plantSymbol);
+
+                    const waterIndicator = document.createElement('div');
+                    waterIndicator.className = 'water-indicator';
+                    waterIndicator.textContent = '💧'.repeat(plant.water);
+                    plantSpot.appendChild(waterIndicator);
+
+                    plantSpot.title = `Growth: ${plant.stage}/4, Water: ${plant.water}/2`;
+                }
+            });
+        }
+
+        function getPlantSymbol(stage) {
+            switch (stage) {
+                case 1: return '🌱';
+                case 2: return '🌿';
+                case 3: return '☘️';
+                case 4: return '🍰'; // Represents a fully grown ingredient
+                default: return '';
+            }
+        }
+
+        function growPlants() {
+            plants.forEach(plant => {
+                if (plant.stage > 0 && plant.stage < 4 && plant.water > 0) {
+                    plant.stage++;
+                    plant.water--;
+                }
+            });
+            updateGarden();
+        }
+
+        function harvestAllPlants() {
+            plants.forEach((plant, index) => {
+                if (plant.stage === 4) {
+                    harvestPlant(index);
+                }
+            });
+        }
+
+        function harvestPlant(index) {
+            if (plants[index].stage === 4) {
+                bakedGoods += 10 * bakerLevel; // Increase baked goods count
+                money += 5 * bakerLevel; // Increase money
+                plants[index].stage = 0;
+                plants[index].water = 0;
+                harvestedPlants++;
+                updateDisplay();
+                showNotification("Harvested baking ingredients!");
+            }
+        }
+
+        function updateWeather() {
+            const newWeather = weatherConditions[Math.floor(Math.random() * weatherConditions.length)];
+            currentWeather = newWeather;
+            document.getElementById('weather-display').textContent = `Current Weather: ${currentWeather}`;
+            applyWeatherEffects();
+        }
+
+        function applyWeatherEffects() {
+            switch (currentWeather) {
+                case 'Sunny ☀️':
+                    plants.forEach(plant => {
+                        if (plant.stage > 0 && plant.stage < 4) {
+                            plant.stage = Math.min(plant.stage + 1, 4);
+                        }
+                    });
+                    break;
+                case 'Rainy 🌧️':
+                    waterPlants();
+                    break;
+                case 'Cloudy ☁️':
+                    // No special effect for cloudy weather
+                    break;
+            }
+            updateGarden();
+        }
+
+        function addCustomer() {
+            if (customers.length < 5) {
+                const customerEmoji = customerEmojis[Math.floor(Math.random() * customerEmojis.length)];
+                const bakedGoodOrder = bakedGoodTypes[Math.floor(Math.random() * bakedGoodTypes.length)];
+                customers.push({ emoji: customerEmoji, order: bakedGoodOrder });
+                updateCustomers();
+                showCustomerNotification(`A new customer wants a ${bakedGoodOrder}!`, customerEmoji);
+            }
+        }
+
+        function removeCustomer() {
+            if (customers.length > 0) {
+                customers.shift();
+                updateCustomers();
+            }
+        }
+
+        function updateCustomers() {
+            const customerArea = document.getElementById('customer-area');
+            customerArea.innerHTML = '<h2>Customers</h2>';
+            customers.forEach(customer => {
+                const customerDiv = document.createElement('div');
+                customerDiv.className = 'customer';
+                customerDiv.innerHTML = `
+                    <span class="customer-emoji">${customer.emoji}</span>
+                    <div class="customer-order">Wants a ${customer.order}</div>
+                `;
+                customerArea.appendChild(customerDiv);
+            });
+        }
+
+        function showCustomerNotification(message, emoji) {
+            const notification = document.getElementById('notification');
+            notification.innerHTML = `<span class="notification-icon">${emoji}</span><span class="notification-text">${message}</span>`;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        function checkBakerLevelUp() {
+            if (bakedGoods >= bakerLevel * 100) {
+                bakerLevel++;
+                showNotification(`Congratulations! You've reached Baker Level ${bakerLevel}!`);
+                updateDisplay();
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.innerHTML = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Initialize the game state
+        function initializeGame() {
+            initializeGarden();
+            updateDisplay();
+            setInterval(() => {
+                growPlants();
+                updateWeather();
+                addCustomer();
+            }, 5000); // Update every 5 seconds
+        }
+
+        // Start the game
+        initializeGame();
+    </script>
+</body>
+</html>
