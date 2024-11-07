@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credits</title>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Itim', cursive;
+            background-color: #f5e6d3;
+            color: #4a3728;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff5e6;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+        h1, h2 {
+            color: #8b4513;
+            text-align: center;
+        }
+        .coffee-btn {
+            background-color: #c0a080;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+        .coffee-btn:hover {
+            background-color: #8b4513;
+        }
+        .credit-item {
+            background-color: #e6ccb3;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            opacity: 0; /* Start hidden */
+            animation-duration: 0.5s; /* Default duration */
+            animation-fill-mode: forwards; /* Keep the last frame */
+        }
+
+        /* Modern CSS Animations */
+        @keyframes modernFadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes modernSlideIn {
+            0% { transform: translateX(-100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes modernZoomIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Credits</h1>
+        <h2>Special Thanks To:</h2>
+        <div class="credit-item">🌟 Developer: DevUrf</div>
+        <a href="https://github.com/DevUrf/DevUrf" style="text-decoration: none;">
+            <div class="credit-item">💻 My Github: look at my other projects!</div>
+        </a>
+        <div class="credit-item">📜 Tester: Everyone!</div>
+        <div class="credit-item">📚 Documentation: DevUrf</div>
+        <div class="credit-item">🌍 Community Support: Everyone!</div>
+        
+        <h2>Thanks for Playing!</h2>
+        <button class="coffee-btn" onclick="window.location.href='index.html'">Back to Home</button>
+    </div>
+
+    <script>
+        // Array of modern animations
+        const modernAnimations = ['modernFadeIn', 'modernSlideIn', 'modernZoomIn'];
+
+        // Get all credit items
+        const creditItems = document.querySelectorAll('.credit-item');
+
+        // Function to apply modern animations to credit items
+        function applyModernAnimations() {
+            creditItems.forEach((item, index) => {
+                // Delay each animation based on its index
+                const delay = index * 0.5; // 0.5 seconds delay for each item
+                const randomAnimation = modernAnimations[Math.floor(Math.random() * modernAnimations.length)];
+                
+                item.style.animationName = randomAnimation;
+                item.style.animationDuration = '0.5s'; // Set duration
+                item.style.animationFillMode = 'forwards'; // Keep the last frame
+                item.style.animationDelay = `${delay}s`; // Apply delay
+                item.style.opacity = '1'; // Make it visible
+            });
+        }
+
+        // Apply modern animations on page load
+        window.onload = applyModernAnimations;
+    </script>
+</body>
+</html>
