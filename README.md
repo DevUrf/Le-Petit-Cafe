@@ -63,3 +63,7 @@ We welcome contributions from the community! If you have ideas, suggestions, or 
 For any inquiries or feedback, please reach out to us at throught **github!**
 
 Thank you for visiting **Le Petit Café!** We hope you enjoy brewing and serving coffee in this tranquil setting. **Happy brewing! ☕✨**
+
+# Japanese Version🏯
+
+[README_JAP.md](README_JAP.md)
