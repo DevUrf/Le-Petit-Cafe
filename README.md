@@ -24,8 +24,7 @@ Welcome to **Le Petit Café**! Your serene escape into the world of coffee makin
 1. **Choose Your Beans**: Start by selecting your favorite coffee beans. Each type has its own unique flavor profile! 🌱
 2. **Brewing Method**: Decide how you want to brew your coffee. Will you use a French press, pour-over, or espresso machine? ☕🔧
 3. **Serve and Enjoy**: Once your coffee is ready, serve it to your virtual customers and enjoy their delightful reactions! 😊❤️
-
-![Coffee Brewing](https://example.com/path-to-your-coffee-brewing-image.jpg) <!-- Replace with an actual image link -->
+ <!-- Replace with an actual image link -->
 
 ## 🏆 Achievements
 
