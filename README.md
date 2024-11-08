@@ -21,7 +21,7 @@ Welcome to **Le Petit Café**! Your serene escape into the world of coffee makin
 
 ## 🎮 How to Play
 
-1. **Choose Your Beans**: Start by selecting your favorite coffee beans. Each type has its own unique flavor profile! 🌱
+1. **Make Coffee!**: Start by pressing the make coffee button and wait for customera 🌱
 2. **Brewing Method**: Decide how you want to brew your coffee. Will you use a French press, pour-over, or espresso machine? ☕🔧
 3. **Serve and Enjoy**: Once your coffee is ready, serve it to your virtual customers and enjoy their delightful reactions! 😊❤️
  <!-- Replace with an actual image link -->
